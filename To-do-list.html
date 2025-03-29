@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do-List</title>
+    <style>
+        body{
+            font-family: arial, sans-serif;
+            text-align: center;
+            background-color: tan;
+        }
+        #container{
+            max-width: 400px;
+            margin: auto;
+        }
+        ul{
+            list-style: none;
+            padding: 0;
+        }
+        li{
+            display:flex;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid black;
+            background-color: aliceblue;
+            margin: 10px 10px;
+            border-radius: 5px;
+        }
+        .completed{
+            text-decoration: line-through;
+            color: rgb(147, 58, 58);
+        }
+        button{
+            margin-left: 10px;
+            background-color: green;
+            border-radius: 25%;
+            
+        }
+    </style>
+</head>
+<body>
+    <h2> My To-Do List</h2>
+    <div id="container">
+        <input type="text" id="task-input" placeholder="Add a new task...">
+        <button onclick="addTask()">Add</button>
+        <ul id="task-list"></ul>
+    </div>
+ <Script>
+    document.addEventListener("DOMContentLoaded", loadTasks);
+    function addTask() {
+        let taskInput = document.getElementById("task-input");
+        let taskText = taskInput.value.trim();
+        if (taskText === "") return;
+        
+        let li = document.createElement("li");
+        let span = document.createElement("span");
+        span.textContent = taskText;
+        span.onclick = () => toggleComplete(span);
+        
+        let deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.onclick = () => removeTask(li, taskText);
+        
+        li.appendChild(span);
+        li.appendChild(deleteBtn);
+        document.getElementById("task-list").appendChild(li);
+        
+        saveTask(taskText);
+        taskInput.value = "";
+    }  
+     
+
+    function toggleComplete(taskElement) {
+        taskElement.classList.toggle("completed");
+    }
+    
+    function removeTask(taskElement, taskText) {
+        taskElement.remove();
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        localStorage.setItem("tasks", JSON.stringify(tasks.filter(task => task !== taskText)));
+    }
+    
+    function saveTask(task) {
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        tasks.push(task);
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+    
+    function loadTasks() {
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        tasks.forEach(taskText => {
+            let li = document.createElement("li");
+            let span = document.createElement("span");
+            span.textContent = taskText;
+            span.onclick = () => toggleComplete(span);
+            
+            let deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.onclick = () => removeTask(li, taskText);
+            
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            document.getElementById("task-list").appendChild(li);
+        });
+    }
+        
+
+
+    
+ </script>   
+</body>
+</html>
